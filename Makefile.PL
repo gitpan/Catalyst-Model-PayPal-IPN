@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use inc::Module::Install 0.65;
+use inc::Module::Install 0.87;
 
 name 'Catalyst-Model-PayPal-IPN';
 all_from 'lib/Catalyst/Model/PayPal/IPN.pm';
@@ -18,4 +18,6 @@ if(-e 'MANIFEST.SKIP') {
 }
 
 auto_install;
+resources repository => 'http://dev.catalyst.perl.org/repos/Catalyst/trunk/Catalyst-Model-PayPal-IPN/';
+
 WriteAll;

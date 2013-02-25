@@ -4,7 +4,7 @@ use Moose;
 use Business::PayPal::IPN;
 use namespace::clean -except => ['meta'];
 
-our $VERSION   = '0.02';
+our $VERSION   = '0.03';
 our $AUTHORITY = 'cpan:MSTROUT';
 
 extends 'Catalyst::Model';
@@ -122,7 +122,7 @@ sub BUILD {
     shift->_check_encrypt_mode;
 }
 
-sub _check_encrypt_mode { 
+sub _check_encrypt_mode {
     Catalyst::Utils::ensure_class_loaded('Business::PayPal::EWP')
           if shift->encrypt_mode;
 }
@@ -253,13 +253,15 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
-=head1 NAME 
+=encoding utf8
+
+=head1 NAME
 
 Catalyst::Model::PayPal::IPN - Handle Instant Payment Notifications and PayPal Button Generation
 
 =head1 VERSION
 
-This document describes Catalyst::Model::PayPal::IPN version 0.02
+This document describes Catalyst::Model::PayPal::IPN version 0.03
 
 =head1 SYNOPSIS
 
@@ -280,22 +282,22 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
         page_style: MyApp
         no_note: 1
         no_shipping: 1
-        lc: GB      
+        lc: GB
         bn: PP-BuyNowBF
 
-    Model::Paypal::IPN:    
+    Model::Paypal::IPN:
         debug_mode: 1
         encrypt_mode: 0
         business_email: ghenry_1188297224_biz@suretecsystems.com
         currency_code: GBP
         cert: /home/ghenry/MyApp/root/auth/paypal_certs/www.myapp.net.crt
         cert_key: /home/ghenry/MyApp/root/auth/paypal_certs/www.myapp.net.key
-        paypal_cert: /home/ghenry/MyApp/root/auth/paypal_certs/paypal_sandbox_cert.pem 
+        paypal_cert: /home/ghenry/MyApp/root/auth/paypal_certs/paypal_sandbox_cert.pem
         completion_action:
             - Subscribe
             - subscribe
             - payment
-            - received 
+            - received
         postback_action:
             - Subscribe
             - subscribe
@@ -352,9 +354,9 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
 
     sub cancelled : Path('payment/cancelled') {
         my ( $self, $c ) = @_;
-    
+
         Do stuff on cancel
-   
+
         $c->stash->{template} = 'user/subscribe/cancelled.tt';
     }
 
@@ -364,7 +366,7 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
 
     sub generate_paypal_buttons : Private {
         my ( $self, $c ) = @_;
-    
+
         if ( $c->stash->{all_buttons} ) {
             $c->stash->{subtypes} = [
                 $c->model('FTMAdminDB::FTMTariffs')->search(
@@ -391,7 +393,7 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
                     bn          => $c->config->{paypal}->{bn},
                     custom      => $c->req->param('subid'),
                 );
-    
+
                 if ( $c->debug ) {
                     for my $param ( keys %data ) {
                         $c->log->debug( $param . '=' . $data{$param} );
@@ -399,16 +401,16 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
                 }
                 $c->stash->{unencrypted_form_data} =
                   $c->model('Paypal::IPN')->form_info( \%data );
-    
+
                 my @button_info = (
                     $tariff->itemdesc, $tariff->peruser,
                     $c->stash->{unencrypted_form_data}
                 );
                 push @{ $c->stash->{unencrypted_buttons} }, \@button_info;
-                
+
                 #$c->stash->{encrypted_form_data} =
                 #  $c->model('Paypal::IPN')->encrypt_form( \%data );
-    
+
                 #my @button_info = (
                 #    $tariff->itemdesc, $tariff->peruser,
                 #    $c->stash->{encrypted_form_data}
@@ -417,7 +419,7 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
             }
         }
     }
-    
+
     buttons.tt
 
     <table>
@@ -425,7 +427,7 @@ This document describes Catalyst::Model::PayPal::IPN version 0.02
             <tr>
                 <td><b>[% button.0 %]</b></td>
                 <td><b>Price:</b> £[% button.1 %]</td>
-                <td class="content">    
+                <td class="content">
                     <form method="post" action="[% c.model('Paypal::IPN').paypal_gateway %]">
                     <input type="hidden" name="cmd" value="_xclick">
                     <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but23.gif" border="0"
@@ -448,14 +450,14 @@ alt="Solution Graphics"></a>
                 </td>
             </tr>
     </table>
-  
-  
+
+
 =head1 DESCRIPTION
 
 This model handles all the latest PayPal IPN vars, and provides an
 easy method for checking that the transaction was successful.
 
-There are also convenience methods for generating encrypted and non-encrypted 
+There are also convenience methods for generating encrypted and non-encrypted
 PayPal forms and buttons.
 
 See L<Business::PayPal::IPN> for more info.
@@ -463,21 +465,21 @@ See L<Business::PayPal::IPN> for more info.
 B<WARNING:> this module does not have real tests yet, if you encounter problems
 please report them via L<http://rt.cpan.org/> .
 
-=head1 INTERFACE 
+=head1 INTERFACE
 
-=head2 build_paypal_gateway 
+=head2 build_paypal_gateway
 
 If debug_mode is on, returns sandbox url, otherwise normal PayPal gateway
 
-=head2 is_completed 
+=head2 is_completed
 
 Calls is_completed from L<Business::PayPal::IPN>
 
-=head2 error 
+=head2 error
 
 Calls error from L<Business::PayPal::IPN>
 
-=head2 buyer_info 
+=head2 buyer_info
 
 Returns IPN vars via L<Business::PayPal::IPN>
 
@@ -487,7 +489,7 @@ See L<https://www.paypal.com/IntegrationCenter/ic_ipn-pdt-variable-reference.htm
 
 Returns a hashref of amount, invoice and custom.
 
-=head2 form_info 
+=head2 form_info
 
 Takes a hashref and returns form data for looping through to create your form.
 
@@ -504,7 +506,7 @@ Encrypts form data.
 The usual techniques for suppling model configuration data in Catalyst apply,
 but the follow should be present:
 
-    Model::Paypal::IPN:    
+    Model::Paypal::IPN:
         debug_mode: 1
         encrypt_mode: 0
         business_email: ghenry_1188297224_biz@suretecsystems.com
@@ -513,7 +515,7 @@ but the follow should be present:
             - Subscribe
             - subscribe
             - payment
-            - received 
+            - received
         postback_action:
             - Subscribe
             - subscribe
@@ -525,7 +527,7 @@ but the follow should be present:
             - payment
             - cancelled
 
-debug_mode switches form url to the PayPal sandbox url. If using encrypted 
+debug_mode switches form url to the PayPal sandbox url. If using encrypted
 buttons, i.e.
 
     encrypt_mode: 1
@@ -534,8 +536,8 @@ then the following will be needed:
 
     cert: /home/ghenry/MyApp/root/auth/paypal_certs/www.myapp.net.crt
     cert_key: /home/ghenry/MyApp/root/auth/paypal_certs/www.myapp.net.key
-    paypal_cert: /home/ghenry/MyApp/root/auth/paypal_certs/paypal_sandbox_cert.pem 
- 
+    paypal_cert: /home/ghenry/MyApp/root/auth/paypal_certs/paypal_sandbox_cert.pem
+
 Catalyst::Model::PayPal::IPN requires:
 
 =head1 DEPENDENCIES
