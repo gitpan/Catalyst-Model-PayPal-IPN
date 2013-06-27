@@ -19,7 +19,6 @@ no_index:
     - inc
     - t
 requires:
-  Business::PayPal::EWP: 0
   Business::PayPal::IPN: 0
   Catalyst::Runtime: 5.7006
   Crypt::SSLeay: 0
@@ -28,4 +27,4 @@ requires:
 resources:
   license: http://dev.perl.org/licenses/
   repository: http://dev.catalyst.perl.org/repos/Catalyst/trunk/Catalyst-Model-PayPal-IPN/
-version: 0.03
+version: 0.04

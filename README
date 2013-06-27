@@ -3,7 +3,7 @@ NAME
     PayPal Button Generation
 
 VERSION
-    This document describes Catalyst::Model::PayPal::IPN version 0.03
+    This document describes Catalyst::Model::PayPal::IPN version 0.04
 
 SYNOPSIS
         lib/MyApp/Model/Paypal/IPN.pm

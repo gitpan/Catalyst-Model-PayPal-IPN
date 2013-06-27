@@ -4,7 +4,7 @@ use Moose;
 use Business::PayPal::IPN;
 use namespace::clean -except => ['meta'];
 
-our $VERSION   = '0.03';
+our $VERSION   = '0.04';
 our $AUTHORITY = 'cpan:MSTROUT';
 
 extends 'Catalyst::Model';
@@ -229,7 +229,7 @@ sub encrypt_form {
     # SignAndEncrypt needs CSV key/vals
     my $form;
     for my $form_param ( keys %$form_args ) {
-        $form .= $form_param . '=' . $form_args->{$form_param} . ',';
+        $form .= $form_param . '=' . $form_args->{$form_param} . "\n";
     }
 
     return Business::PayPal::EWP::SignAndEncrypt(
@@ -261,7 +261,7 @@ Catalyst::Model::PayPal::IPN - Handle Instant Payment Notifications and PayPal B
 
 =head1 VERSION
 
-This document describes Catalyst::Model::PayPal::IPN version 0.03
+This document describes Catalyst::Model::PayPal::IPN version 0.04
 
 =head1 SYNOPSIS
 
